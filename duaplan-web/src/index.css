@@ -1,0 +1,61 @@
+/* ============================================================
+   duaplan — Global Styles
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Colors */
+  --color-primary:    #6C63FF;
+  --color-primary-d:  #5a52d5;
+  --color-secondary:  #FF6584;
+  --color-success:    #43D89E;
+  --color-warning:    #FFB547;
+  --color-danger:     #FF5C5C;
+
+  /* Neutral */
+  --color-bg:         #0F0F13;
+  --color-surface:    #1A1A24;
+  --color-surface-2:  #23232F;
+  --color-border:     #2E2E3D;
+  --color-text:       #F0F0F5;
+  --color-text-muted: #8888A8;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Spacing */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100%;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
