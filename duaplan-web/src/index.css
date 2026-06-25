@@ -1,61 +1,156 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource-variable/inter';
+
+@custom-variant dark (&:is(.dark *));
+
 /* ============================================================
-   duaplan — Global Styles
+   duaplan — Design System (Teal Dark Mode)
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@theme inline {
+  /* Font */
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-heading: 'Inter Variable', system-ui, sans-serif;
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  /* Map CSS variables → Tailwind tokens */
+  --color-background:             var(--background);
+  --color-foreground:             var(--foreground);
+  --color-card:                   var(--card);
+  --color-card-foreground:        var(--card-foreground);
+  --color-popover:                var(--popover);
+  --color-popover-foreground:     var(--popover-foreground);
+  --color-primary:                var(--primary);
+  --color-primary-foreground:     var(--primary-foreground);
+  --color-secondary:              var(--secondary);
+  --color-secondary-foreground:   var(--secondary-foreground);
+  --color-muted:                  var(--muted);
+  --color-muted-foreground:       var(--muted-foreground);
+  --color-accent:                 var(--accent);
+  --color-accent-foreground:      var(--accent-foreground);
+  --color-destructive:            var(--destructive);
+  --color-border:                 var(--border);
+  --color-input:                  var(--input);
+  --color-ring:                   var(--ring);
+
+  /* Chart tokens */
+  --color-chart-1:  var(--chart-1);
+  --color-chart-2:  var(--chart-2);
+  --color-chart-3:  var(--chart-3);
+  --color-chart-4:  var(--chart-4);
+  --color-chart-5:  var(--chart-5);
+
+  /* duaplan custom tokens */
+  --color-income:   var(--income);
+  --color-expense:  var(--expense);
+  --color-savings:  var(--savings);
+  --color-success:  var(--success);
+  --color-warning:  var(--warning);
+
+  /* Radius */
+  --radius-sm:  calc(var(--radius) * 0.6);
+  --radius-md:  calc(var(--radius) * 0.8);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.4);
 }
 
+/* ── Dark Mode Base (default — duaplan is always dark) ── */
 :root {
-  /* Colors */
-  --color-primary:    #6C63FF;
-  --color-primary-d:  #5a52d5;
-  --color-secondary:  #FF6584;
-  --color-success:    #43D89E;
-  --color-warning:    #FFB547;
-  --color-danger:     #FF5C5C;
+  color-scheme: dark;
 
-  /* Neutral */
-  --color-bg:         #0F0F13;
-  --color-surface:    #1A1A24;
-  --color-surface-2:  #23232F;
-  --color-border:     #2E2E3D;
-  --color-text:       #F0F0F5;
-  --color-text-muted: #8888A8;
+  /* === TEAL PALETTE === */
+  --background:         oklch(0.11 0.015 220);   /* #080e1a — deep dark navy */
+  --foreground:         oklch(0.97 0.008 195);   /* #f0fafa — near white teal tint */
 
-  /* Typography */
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --card:               oklch(0.15 0.018 220);   /* #0e1929 — card surface */
+  --card-foreground:    oklch(0.97 0.008 195);
 
-  /* Spacing */
-  --radius-sm:  6px;
-  --radius-md:  12px;
-  --radius-lg:  20px;
+  --popover:            oklch(0.15 0.018 220);
+  --popover-foreground: oklch(0.97 0.008 195);
+
+  /* Primary: Teal #20c997 */
+  --primary:            oklch(0.72 0.16 175);
+  --primary-foreground: oklch(0.11 0.015 220);
+
+  /* Secondary surface */
+  --secondary:          oklch(0.20 0.020 220);
+  --secondary-foreground: oklch(0.90 0.010 195);
+
+  --muted:              oklch(0.20 0.020 220);
+  --muted-foreground:   oklch(0.58 0.025 215);
+
+  /* Accent: Cyan #1ba8c0 */
+  --accent:             oklch(0.65 0.14 210);
+  --accent-foreground:  oklch(0.11 0.015 220);
+
+  --destructive:        oklch(0.62 0.22  25);    /* red */
+
+  --border:             oklch(0.22 0.020 220);
+  --input:              oklch(0.20 0.020 220);
+  --ring:               oklch(0.72 0.16 175);    /* teal ring */
+
+  --radius: 0.75rem;
+
+  /* Chart colors */
+  --chart-1: oklch(0.72 0.16  175);   /* teal */
+  --chart-2: oklch(0.65 0.14  210);   /* cyan */
+  --chart-3: oklch(0.75 0.17   90);   /* lime */
+  --chart-4: oklch(0.68 0.19  300);   /* purple */
+  --chart-5: oklch(0.62 0.22   25);   /* red */
+
+  /* === duaplan Custom Finance Tokens === */
+  --income:   oklch(0.72 0.16 175);   /* teal  — pemasukan */
+  --expense:  oklch(0.62 0.22  25);   /* red   — pengeluaran */
+  --savings:  oklch(0.68 0.19 300);   /* purple — tabungan */
+  --success:  oklch(0.75 0.17  145);  /* green */
+  --warning:  oklch(0.78 0.18   85);  /* amber */
 }
 
-html, body {
-  height: 100%;
-  font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-size: 16px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+/* ── Base Resets ── */
+@layer base {
+  *, *::before, *::after {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
 
-#root {
-  height: 100%;
-}
+  html {
+    @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
+  body {
+    @apply bg-background text-foreground;
+    height: 100%;
+    line-height: 1.6;
+  }
 
-button {
-  cursor: pointer;
-  font-family: inherit;
+  #root {
+    height: 100%;
+  }
+
+  a {
+    @apply text-primary;
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* Custom scrollbar — teal themed */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/40;
+  }
 }

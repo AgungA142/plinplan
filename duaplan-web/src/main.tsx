@@ -6,6 +6,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import App from './App.tsx';
 import './index.css';
 
+// duaplan uses dark mode by default
+document.documentElement.classList.add('dark');
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
