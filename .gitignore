@@ -1,6 +1,7 @@
 # IDE & Tools
 .claude
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 
 # Dependencies
