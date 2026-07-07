@@ -7,6 +7,7 @@ import { validateJWT } from './middleware/validateJWT';
 import { attachUser } from './middleware/attachUser';
 import { errorHandler } from './middleware/errorHandler';
 import healthRouter from './routes/health';
+import authRouter from './routes/auth';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -26,6 +27,7 @@ app.use(express.json());
 
 // ── Public routes ──────────────────────────────────────────────
 app.use('/health', healthRouter);
+app.use('/v1/auth', authRouter);
 
 // ── Auth middleware (applies to all routes below) ──────────────
 app.use(validateJWT);
