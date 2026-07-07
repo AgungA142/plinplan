@@ -67,8 +67,7 @@ export async function update(req: Request, res: Response, next: NextFunction): P
     const { couple_id } = getUser(req);
     if (!couple_id) { res.status(403).json({ error: 'Belum paired' }); return; }
     const data = updateEventSchema.parse(req.body);
-    const scope = req.query.scope as 'this' | 'all' | undefined;
-    const instanceDate = req.query.instance_date as string | undefined;
+    const { scope, instanceDate } = req.body as { scope?: 'this' | 'all'; instanceDate?: string };
     const event = await eventService.updateEvent(req.params.id as string, couple_id, data, scope, instanceDate);
     res.json(event);
   } catch (err) {
