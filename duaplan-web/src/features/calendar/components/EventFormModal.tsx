@@ -42,7 +42,7 @@ const COLOR_SWATCHES = [
 
 interface Props {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onClose: () => void;
   defaultDate?: Date;
   event?: CalendarEvent;
   instanceDate?: string;
@@ -60,7 +60,7 @@ function toISO(date: string, time: string) {
 
 export default function EventFormModal({
   open,
-  onOpenChange,
+  onClose,
   defaultDate,
   event,
   instanceDate,
@@ -90,6 +90,7 @@ export default function EventFormModal({
   useEffect(() => {
     if (!open) return;
     if (event) {
+      setShowDeleteConfirm(false);
       setTitle(event.title);
       setDate(toInputDate(event.start_at));
       setStartTime(toInputTime(event.start_at));
@@ -160,7 +161,7 @@ export default function EventFormModal({
         await createEvent.mutateAsync(payload);
         toast.success('Event berhasil dibuat');
       }
-      onOpenChange(false);
+      onClose();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Gagal menyimpan event');
     }
@@ -176,7 +177,7 @@ export default function EventFormModal({
           event.is_recurring && scope === 'this' ? instanceDate : undefined,
       });
       toast.success('Event berhasil dihapus');
-      onOpenChange(false);
+      onClose();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Gagal menghapus event');
     }
@@ -186,7 +187,7 @@ export default function EventFormModal({
     createEvent.isPending || updateEvent.isPending || deleteEvent.isPending;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Edit Event' : 'Buat Event Baru'}</DialogTitle>
@@ -435,7 +436,7 @@ export default function EventFormModal({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => onOpenChange(false)}
+                  onClick={() => onClose()}
                   disabled={isPending}
                 >
                   Batal
