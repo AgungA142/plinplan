@@ -46,7 +46,7 @@ export async function register({ email, password, display_name }: RegisterInput)
 
   return {
     user: { id: userId, email, display_name, couple_id: couple.id },
-    pair_code,
+    couple,
     access_token: session.session!.access_token,
   };
 }

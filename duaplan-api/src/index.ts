@@ -8,6 +8,7 @@ import { attachUser } from './middleware/attachUser';
 import { errorHandler } from './middleware/errorHandler';
 import healthRouter from './routes/health';
 import authRouter from './routes/auth';
+import couplesRouter from './routes/couples';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -34,7 +35,7 @@ app.use(validateJWT);
 app.use(attachUser);
 
 // ── Protected routes ───────────────────────────────────────────
-// (future route modules go here)
+app.use('/v1/couples', couplesRouter);
 
 // ── Global error handler ───────────────────────────────────────
 app.use(errorHandler);
