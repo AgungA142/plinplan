@@ -1,13 +1,15 @@
 import { useAuthStore } from '@/features/auth/store/authStore';
 import type { CalendarEvent } from '@/types';
+import { cn } from '@/lib/utils';
 import { formatTime } from '../utils/calendarHelpers';
 
 interface Props {
   event: CalendarEvent;
-  onClick: () => void;
+  onClick?: () => void;
+  className?: string;
 }
 
-export default function EventCard({ event, onClick }: Props) {
+export default function EventCard({ event, onClick, className }: Props) {
   const userId = useAuthStore((s) => s.user?.id);
   const isOwn = event.created_by === userId;
   const bgColor = event.color ?? (isOwn ? '#6366f1' : '#8b5cf6');
@@ -15,7 +17,7 @@ export default function EventCard({ event, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors"
+      className={cn('w-full text-left flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors', className)}
     >
       <div className="w-1 self-stretch rounded-full flex-shrink-0" style={{ backgroundColor: bgColor }} />
       <div className="flex-1 min-w-0">
