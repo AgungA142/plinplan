@@ -19,6 +19,9 @@ interface AuthState {
   logout: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (accessToken: string, newPassword: string) => Promise<void>;
+  pairWithPartner: (code: string) => Promise<void>;
+  generateNewCode: () => Promise<string>;
+  unpair: () => Promise<void>;
   reset: () => void;
 }
 
@@ -48,16 +51,16 @@ export const useAuthStore = create<AuthState>()(
       register: async ({ email, password, display_name }) => {
         const data = await api.post<{
           user: User;
-          pair_code: string;
+          couple: Couple;
           access_token: string;
         }>('/v1/auth/register', { email, password, display_name });
         set({
           user: data.user,
-          couple: null,
+          couple: data.couple,
           accessToken: data.access_token,
           isAuthenticated: true,
         });
-        return { pairCode: data.pair_code };
+        return { pairCode: data.couple.pair_code };
       },
 
       logout: async () => {
@@ -77,6 +80,23 @@ export const useAuthStore = create<AuthState>()(
           access_token: accessToken,
           new_password: newPassword,
         });
+      },
+
+      pairWithPartner: async (code) => {
+        const data = await api.post<Couple>('/v1/couples/pair', { pair_code: code });
+        set({ couple: data });
+      },
+
+      generateNewCode: async () => {
+        const data = await api.post<{ pair_code: string }>('/v1/couples/generate-code', {});
+        const { couple } = get();
+        if (couple) set({ couple: { ...couple, pair_code: data.pair_code } });
+        return data.pair_code;
+      },
+
+      unpair: async () => {
+        await api.delete<void>('/v1/couples/unpair');
+        set({ couple: null });
       },
 
       reset: () => set({ user: null, couple: null, accessToken: null, isAuthenticated: false }),
