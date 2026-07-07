@@ -31,7 +31,13 @@ export interface Couple {
 
 // ── Events ────────────────────────────────────────────────────
 export type EventCategory = 'date' | 'routine' | 'financial' | 'family' | 'health' | 'other';
-export type EventVisibility = 'both' | 'private';
+
+export interface RecurRule {
+  freq: 'daily' | 'weekly' | 'monthly';
+  interval: number;
+  until?: string;        // ISO datetime string
+  exceptions?: string[]; // ISO date strings (YYYY-MM-DD) yang di-skip
+}
 
 export interface CalendarEvent {
   id: string;
@@ -39,16 +45,20 @@ export interface CalendarEvent {
   created_by: string;
   title: string;
   description: string | null;
-  start_at: string;
+  start_at: string;   // ISO datetime
   end_at: string | null;
   all_day: boolean;
   category: EventCategory | null;
-  visibility: EventVisibility;
   color: string | null;
   is_recurring: boolean;
-  recur_rule: Record<string, unknown> | null;
+  recur_rule: RecurRule | null;
   created_at: string;
   updated_at: string;
+  creator?: {
+    id: string;
+    display_name: string;
+    avatar_url: string | null;
+  };
 }
 
 // ── Routine ───────────────────────────────────────────────────
