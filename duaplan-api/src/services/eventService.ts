@@ -1,4 +1,5 @@
 // duaplan-api/src/services/eventService.ts
+import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import type { events } from '@prisma/client';
 import type { CreateEventInput, UpdateEventInput } from '../validators/eventValidator';
@@ -13,7 +14,7 @@ interface RecurRule {
 function expandEvent(event: events, rangeStart: Date, rangeEnd: Date): events[] {
   if (!event.is_recurring || !event.recur_rule) return [event];
 
-  const rule = event.recur_rule as RecurRule;
+  const rule = event.recur_rule as unknown as RecurRule;
   const exceptions = new Set(rule.exceptions ?? []);
   const until = rule.until ? new Date(rule.until) : rangeEnd;
   const effectiveEnd = until < rangeEnd ? until : rangeEnd;
@@ -114,7 +115,7 @@ export async function createEvent(
       color:        data.color ?? null,
       description:  data.description ?? null,
       is_recurring: data.is_recurring ?? false,
-      recur_rule:   data.recur_rule ?? null,
+      recur_rule:   data.recur_rule ?? Prisma.DbNull,
     },
     include: {
       users: { select: { id: true, display_name: true, avatar_url: true } },
@@ -138,7 +139,7 @@ export async function updateEvent(
 
   // Edit "event ini saja" — tambah exception lalu buat event baru satu kali
   if (existing.is_recurring && scope === 'this' && instanceDate) {
-    const rule = (existing.recur_rule ?? {}) as RecurRule;
+    const rule = (existing.recur_rule ?? {}) as unknown as RecurRule;
     const exceptions = [...(rule.exceptions ?? []), instanceDate];
     await prisma.events.update({
       where: { id },
@@ -159,7 +160,7 @@ export async function updateEvent(
         color:        data.color !== undefined ? (data.color ?? null) : existing.color,
         description:  data.description !== undefined ? (data.description ?? null) : existing.description,
         is_recurring: false,
-        recur_rule:   null,
+        recur_rule:   Prisma.DbNull,
       },
       include: { users: { select: { id: true, display_name: true, avatar_url: true } } },
     });
@@ -176,7 +177,7 @@ export async function updateEvent(
       ...(data.category    !== undefined ? { category: data.category ?? null } : {}),
       ...(data.color       !== undefined ? { color: data.color ?? null } : {}),
       ...(data.description !== undefined ? { description: data.description ?? null } : {}),
-      ...(data.recur_rule  !== undefined ? { recur_rule: data.recur_rule ?? null } : {}),
+      ...(data.recur_rule  !== undefined ? { recur_rule: data.recur_rule ?? Prisma.DbNull } : {}),
     },
     include: { users: { select: { id: true, display_name: true, avatar_url: true } } },
   });
@@ -197,7 +198,7 @@ export async function deleteEvent(
 
   // Hapus "event ini saja" — tambah ke exceptions
   if (existing.is_recurring && scope === 'this' && instanceDate) {
-    const rule = (existing.recur_rule ?? {}) as RecurRule;
+    const rule = (existing.recur_rule ?? {}) as unknown as RecurRule;
     const exceptions = [...(rule.exceptions ?? []), instanceDate];
     await prisma.events.update({
       where: { id },
