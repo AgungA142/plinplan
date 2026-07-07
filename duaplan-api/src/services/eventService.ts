@@ -43,6 +43,7 @@ function expandEvent(event: events, rangeStart: Date, rangeEnd: Date): events[] 
 
 export async function getEvents(
   coupleId: string,
+  _userId: string,
   start: string,
   end: string,
   category?: string,
