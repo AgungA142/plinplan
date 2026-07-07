@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,18 +16,17 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setError('');
     setLoading(true);
     try {
       await login(email, password);
+      toast.success('Selamat datang kembali!');
       navigate('/', { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login gagal');
+      toast.error(err instanceof Error ? err.message : 'Login gagal');
     } finally {
       setLoading(false);
     }
@@ -92,8 +92,6 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
-
-              {error && <p className="text-destructive text-sm">{error}</p>}
 
               <Button
                 type="submit"

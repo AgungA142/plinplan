@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,7 +13,6 @@ export default function RegisterPage() {
 
   const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', display_name: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   function setField(field: string, value: string) {
@@ -21,14 +21,13 @@ export default function RegisterPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setError('');
 
     if (form.password !== form.confirmPassword) {
-      setError('Password dan konfirmasi password tidak sama');
+      toast.error('Password dan konfirmasi password tidak sama');
       return;
     }
     if (form.password.length < 8) {
-      setError('Password minimal 8 karakter');
+      toast.error('Password minimal 8 karakter');
       return;
     }
 
@@ -39,9 +38,10 @@ export default function RegisterPage() {
         password: form.password,
         display_name: form.display_name,
       });
+      toast.success('Akun berhasil dibuat!');
       navigate('/pair', { state: { pairCode } });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registrasi gagal');
+      toast.error(err instanceof Error ? err.message : 'Registrasi gagal');
     } finally {
       setLoading(false);
     }
@@ -122,8 +122,6 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-
-              {error && <p className="text-destructive text-sm">{error}</p>}
 
               <Button
                 type="submit"
