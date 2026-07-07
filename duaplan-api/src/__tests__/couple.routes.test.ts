@@ -3,6 +3,14 @@ import request from 'supertest';
 import app from '../index';
 import * as coupleService from '../services/coupleService';
 
+vi.mock('../services/authService', () => ({
+  register: vi.fn(),
+  login: vi.fn(),
+  logout: vi.fn(),
+  forgotPassword: vi.fn(),
+  resetPassword: vi.fn(),
+}));
+
 vi.mock('../services/coupleService', () => ({
   pairWithPartner: vi.fn(),
   getMe: vi.fn(),
