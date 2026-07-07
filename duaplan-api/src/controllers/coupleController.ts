@@ -8,6 +8,19 @@ function handleZodError(err: ZodError, res: Response): void {
   res.status(400).json({ error: 'Validation error', details });
 }
 
+export async function lookup(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const code = (req.query.code as string | undefined)?.toUpperCase() ?? '';
+    if (code.length !== 8) { res.status(400).json({ error: 'Kode harus 8 karakter' }); return; }
+    const user = await coupleService.lookupByCode(code);
+    res.json(user);
+  } catch (err) {
+    const e = err as Error & { status?: number };
+    if (e.status) { res.status(e.status).json({ error: e.message }); return; }
+    next(err);
+  }
+}
+
 export async function pair(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { pair_code } = pairSchema.parse(req.body);
