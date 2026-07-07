@@ -1,34 +1,32 @@
-import { supabase } from './supabase';
-
 const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
-async function getAuthHeader(): Promise<Record<string, string>> {
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  return token ? { Authorization: `Bearer ${token}` } : {};
+function getToken(): string | null {
+  try {
+    const raw = localStorage.getItem('duaplan-auth');
+    if (!raw) return null;
+    return (JSON.parse(raw) as { state?: { accessToken?: string } }).state?.accessToken ?? null;
+  } catch {
+    return null;
+  }
 }
 
-async function request<T>(
-  method: string,
-  path: string,
-  body?: unknown
-): Promise<T> {
-  const authHeader = await getAuthHeader();
-
+async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const token = getToken();
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
-      ...authHeader,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    ...(body ? { body: JSON.stringify(body) } : {}),
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message ?? 'Request failed');
+    throw new Error((err as { message?: string }).message ?? 'Request failed');
   }
 
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
