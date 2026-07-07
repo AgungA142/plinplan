@@ -1,22 +1,30 @@
 // duaplan-web/src/features/calendar/components/CalendarMonthly.tsx
+import { useState } from 'react';
 import { useAuthStore } from '@/features/auth/store/authStore';
 import type { CalendarEvent } from '@/types';
 import { getMonthGrid, getEventsForDay, isSameDay } from '../utils/calendarHelpers';
+import { useEvents } from '../hooks/useEvents';
+import EventFormModal from './EventFormModal';
 
 const DAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
-interface Props {
-  year: number;
-  month: number;
-  events: CalendarEvent[];
-  selectedDate: Date;
+interface CalendarMonthlyProps {
+  currentDate: Date;
   onDateSelect: (date: Date) => void;
-  onEventClick: (event: CalendarEvent) => void;
 }
 
-export default function CalendarMonthly({ year, month, events, selectedDate, onDateSelect, onEventClick }: Props) {
+export default function CalendarMonthly({ currentDate, onDateSelect }: CalendarMonthlyProps) {
   const userId = useAuthStore((s) => s.user?.id);
-  const grid = getMonthGrid(year, month);
+
+  const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
+  const { data: events = [] } = useEvents(startOfMonth, endOfMonth);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+  const grid = getMonthGrid(currentDate.getFullYear(), currentDate.getMonth());
   const today = new Date();
 
   return (
@@ -31,9 +39,8 @@ export default function CalendarMonthly({ year, month, events, selectedDate, onD
       {/* Grid hari */}
       <div className="grid grid-cols-7 flex-1" style={{ gridTemplateRows: 'repeat(6, 1fr)' }}>
         {grid.map((day, i) => {
-          const isCurrentMonth = day.getMonth() === month;
+          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
           const isToday = isSameDay(day, today);
-          const isSelected = isSameDay(day, selectedDate);
           const dayEvents = getEventsForDay(events, day);
           const visible = dayEvents.slice(0, 3);
           const overflow = dayEvents.length - 3;
@@ -41,14 +48,13 @@ export default function CalendarMonthly({ year, month, events, selectedDate, onD
           return (
             <div
               key={i}
-              onClick={() => onDateSelect(day)}
+              onClick={() => { setSelectedDate(day); setSelectedEvent(undefined); setModalOpen(true); onDateSelect(day); }}
               className={`border-b border-r border-border p-1 cursor-pointer transition-colors hover:bg-muted/40 ${
                 !isCurrentMonth ? 'opacity-40' : ''
               }`}
             >
               <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium mb-1 ${
-                isToday ? 'bg-primary text-primary-foreground' :
-                isSelected ? 'bg-muted text-foreground' : 'text-foreground'
+                isToday ? 'bg-primary text-primary-foreground' : 'text-foreground'
               }`}>
                 {day.getDate()}
               </div>
@@ -57,7 +63,7 @@ export default function CalendarMonthly({ year, month, events, selectedDate, onD
                 {visible.map((ev) => (
                   <button
                     key={`${ev.id}-${ev.start_at}`}
-                    onClick={(e) => { e.stopPropagation(); onEventClick(ev); }}
+                    onClick={(e) => { e.stopPropagation(); setSelectedEvent(ev); setSelectedDate(undefined); setModalOpen(true); }}
                     className="w-full text-left text-xs px-1 py-0.5 rounded truncate"
                     style={{ backgroundColor: ev.color ?? (ev.created_by === userId ? '#6366f1' : '#8b5cf6'), color: '#fff' }}
                   >
@@ -66,13 +72,20 @@ export default function CalendarMonthly({ year, month, events, selectedDate, onD
                   </button>
                 ))}
                 {overflow > 0 && (
-                  <div className="text-xs text-muted-foreground px-1">+{overflow} lagi</div>
+                  <div className="text-xs text-muted-foreground px-1">+{overflow} lainnya</div>
                 )}
               </div>
             </div>
           );
         })}
       </div>
+
+      <EventFormModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        event={selectedEvent}
+        defaultDate={selectedDate}
+      />
     </div>
   );
 }
