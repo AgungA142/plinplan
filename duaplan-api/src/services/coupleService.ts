@@ -15,6 +15,31 @@ async function uniquePairCode(): Promise<string> {
   return code;
 }
 
+export async function lookupByCode(pair_code: string) {
+  const upperCode = pair_code.toUpperCase();
+
+  const { data: couple } = await supabaseAdmin
+    .from('couples')
+    .select('user_a_id')
+    .eq('pair_code', upperCode)
+    .eq('pair_status', 'pending')
+    .maybeSingle();
+
+  if (!couple) {
+    const err = new Error('Kode tidak valid atau sudah digunakan') as Error & { status: number };
+    err.status = 404;
+    throw err;
+  }
+
+  const { data: user } = await supabaseAdmin
+    .from('users')
+    .select('id, display_name, avatar_url')
+    .eq('id', couple.user_a_id)
+    .single();
+
+  return user;
+}
+
 export async function pairWithPartner(userId: string, pair_code: string) {
   const upperCode = pair_code.toUpperCase();
 

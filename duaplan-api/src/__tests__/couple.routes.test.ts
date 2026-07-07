@@ -12,6 +12,7 @@ vi.mock('../services/authService', () => ({
 }));
 
 vi.mock('../services/coupleService', () => ({
+  lookupByCode: vi.fn(),
   pairWithPartner: vi.fn(),
   getMe: vi.fn(),
   generateNewCode: vi.fn(),
@@ -39,7 +40,30 @@ const mockCouple = {
   created_at: '2026-07-07T00:00:00.000Z',
 };
 
+const mockPartner = { id: 'other-user', display_name: 'Dewi', avatar_url: null };
+
 beforeEach(() => vi.clearAllMocks());
+
+describe('GET /v1/couples/lookup', () => {
+  it('return data pasangan jika kode valid', async () => {
+    vi.mocked(coupleService.lookupByCode).mockResolvedValue(mockPartner as never);
+    const res = await request(app).get('/v1/couples/lookup?code=ABCD1234');
+    expect(res.status).toBe(200);
+    expect(res.body.display_name).toBe('Dewi');
+  });
+
+  it('gagal jika kode kurang dari 8 karakter', async () => {
+    const res = await request(app).get('/v1/couples/lookup?code=SHORT');
+    expect(res.status).toBe(400);
+  });
+
+  it('gagal jika kode tidak ditemukan', async () => {
+    const err = Object.assign(new Error('Kode tidak valid atau sudah digunakan'), { status: 404 });
+    vi.mocked(coupleService.lookupByCode).mockRejectedValue(err);
+    const res = await request(app).get('/v1/couples/lookup?code=NOTFOUND');
+    expect(res.status).toBe(404);
+  });
+});
 
 describe('POST /v1/couples/pair', () => {
   it('berhasil pair dengan kode valid', async () => {
