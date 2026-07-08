@@ -38,9 +38,13 @@ export default function PairPage() {
 
   // Dipanggil saat user klik "Hubungkan" — lookup dulu, buka modal
   async function handlePair(code: string) {
-    const data = await api.get<Partner>(`/v1/couples/lookup?code=${code}`);
-    setPendingCode(code);
-    setPartner(data);
+    try {
+      const data = await api.get<Partner>(`/v1/couples/lookup?code=${code}`);
+      setPendingCode(code);
+      setPartner(data);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Kode tidak valid atau sudah digunakan');
+    }
   }
 
   async function handleConfirm() {
