@@ -125,7 +125,7 @@ export default function EventFormModal({
     }
   }, [open, event, defaultDateStr]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
     const payload = {
       title,
