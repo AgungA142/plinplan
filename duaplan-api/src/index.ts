@@ -10,6 +10,7 @@ import healthRouter from './routes/health';
 import authRouter from './routes/auth';
 import couplesRouter from './routes/couples';
 import eventsRouter from './routes/events';
+import routinesRouter from './routes/routines';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -38,6 +39,7 @@ app.use(attachUser);
 // ── Protected routes ───────────────────────────────────────────
 app.use('/v1/couples', couplesRouter);
 app.use('/v1/events', eventsRouter);
+app.use('/v1/routines', routinesRouter);
 
 // ── Global error handler ───────────────────────────────────────
 app.use(errorHandler);
