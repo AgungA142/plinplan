@@ -80,6 +80,7 @@ export default function CalendarAgenda({ currentDate, onDateSelect }: CalendarAg
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         event={selectedEvent}
+        instanceDate={selectedEvent ? selectedEvent.start_at.split('T')[0] : undefined}
       />
     </>
   );

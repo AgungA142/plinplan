@@ -85,6 +85,7 @@ export default function CalendarMonthly({ currentDate, onDateSelect }: CalendarM
         onClose={() => setModalOpen(false)}
         event={selectedEvent}
         defaultDate={selectedDate}
+        instanceDate={selectedEvent ? selectedEvent.start_at.split('T')[0] : undefined}
       />
     </div>
   );

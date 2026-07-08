@@ -203,6 +203,7 @@ export default function CalendarWeekly({ currentDate, onDateSelect }: CalendarWe
         onClose={() => setModalOpen(false)}
         event={selectedEvent}
         defaultDate={selectedDate}
+        instanceDate={selectedEvent ? selectedEvent.start_at.split('T')[0] : undefined}
       />
     </div>
   );

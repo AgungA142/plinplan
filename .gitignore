@@ -42,3 +42,6 @@ coverage/
 
 # Design docs
 docs/
+
+# Supabase temp
+supabase/.temp/

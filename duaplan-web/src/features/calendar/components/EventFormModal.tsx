@@ -55,7 +55,7 @@ function toInputTime(iso: string) {
   return iso.split('T')[1]?.slice(0, 5) ?? '00:00';
 }
 function toISO(date: string, time: string) {
-  return `${date}T${time}:00.000Z`;
+  return new Date(`${date}T${time}:00`).toISOString();
 }
 
 export default function EventFormModal({
