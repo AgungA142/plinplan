@@ -21,6 +21,12 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
 
+  if (res.status === 401) {
+    localStorage.removeItem('duaplan-auth');
+    window.location.replace('/login');
+    throw new Error('Sesi berakhir, silakan login ulang');
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     const e = err as { error?: string; message?: string };
