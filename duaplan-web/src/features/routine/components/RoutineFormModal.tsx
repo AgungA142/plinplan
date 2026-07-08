@@ -44,7 +44,7 @@ export default function RoutineFormModal({
     }
   }, [routine, open]);
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault();
     onSubmit({
       ...(routine ? { id: routine.id } : {}),
