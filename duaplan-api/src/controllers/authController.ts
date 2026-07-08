@@ -31,6 +31,11 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     res.json(result);
   } catch (err) {
     if (err instanceof ZodError) { handleZodError(err, res); return; }
+    const e = err as { message?: string; status?: number };
+    if (e.message?.includes('Invalid login credentials') || e.message?.includes('Email not confirmed')) {
+      res.status(401).json({ error: 'Email atau password salah' });
+      return;
+    }
     next(err);
   }
 }
