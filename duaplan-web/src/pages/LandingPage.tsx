@@ -1,4 +1,4 @@
-import { Navigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Calendar, CheckSquare, Wallet, PiggyBank } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -30,14 +30,7 @@ const FEATURES = [
 export default function LandingPage() {
   const { isAuthenticated, couple } = useAuthStore();
 
-  if (isAuthenticated) {
-    return (
-      <Navigate
-        to={couple?.pair_status === 'active' ? '/calendar' : '/pair'}
-        replace
-      />
-    );
-  }
+  const appRoute = couple?.pair_status === 'active' ? '/calendar' : '/pair';
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -45,12 +38,20 @@ export default function LandingPage() {
       <header className="border-b border-border px-6 py-4 flex items-center justify-between">
         <span className="text-xl font-bold tracking-tight">duaplan</span>
         <div className="flex items-center gap-3">
-          <Link to="/login" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}>
-            Masuk
-          </Link>
-          <Link to="/register" className={cn(buttonVariants({ size: 'sm' }))}>
-            Mulai Sekarang
-          </Link>
+          {isAuthenticated ? (
+            <Link to={appRoute} className={cn(buttonVariants({ size: 'sm' }))}>
+              Buka Aplikasi
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}>
+                Masuk
+              </Link>
+              <Link to="/register" className={cn(buttonVariants({ size: 'sm' }))}>
+                Mulai Sekarang
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
