@@ -9,6 +9,7 @@ import { errorHandler } from './middleware/errorHandler';
 import healthRouter from './routes/health';
 import authRouter from './routes/auth';
 import couplesRouter from './routes/couples';
+import eventsRouter from './routes/events';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -36,6 +37,7 @@ app.use(attachUser);
 
 // ── Protected routes ───────────────────────────────────────────
 app.use('/v1/couples', couplesRouter);
+app.use('/v1/events', eventsRouter);
 
 // ── Global error handler ───────────────────────────────────────
 app.use(errorHandler);

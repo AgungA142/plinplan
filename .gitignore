@@ -39,3 +39,9 @@ Thumbs.db
 # Test coverage
 coverage/
 **/coverage/
+
+# Design docs
+docs/
+
+# Supabase temp
+supabase/.temp/
