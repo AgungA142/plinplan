@@ -24,8 +24,10 @@ export function subscribeCouple(
       invalidate('events')
     )
     .on(
+      // routine_logs tidak punya kolom couple_id — subscribe tanpa filter,
+      // invalidate akan refetch data milik couple yang aktif
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'routine_logs', filter: `couple_id=eq.${coupleId}` },
+      { event: '*', schema: 'public', table: 'routine_logs' },
       invalidate('routines', 'today')
     )
     .on(

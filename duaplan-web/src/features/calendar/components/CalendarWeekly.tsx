@@ -1,5 +1,5 @@
 // duaplan-web/src/features/calendar/components/CalendarWeekly.tsx
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/store/authStore';
 import type { CalendarEvent } from '@/types';
 import {
@@ -27,11 +27,12 @@ export default function CalendarWeekly({ currentDate, onDateSelect }: CalendarWe
   const today = new Date();
   const days = getWeekDays(currentDate);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hasScrolled = useRef(false);
 
   const weekStart = days[0];
   const weekEnd = new Date(days[6]);
   weekEnd.setHours(23, 59, 59, 999);
-  const { data: events = [] } = useEvents(weekStart, weekEnd);
+  const { data: events = [], isLoading } = useEvents(weekStart, weekEnd);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | undefined>();
@@ -57,6 +58,31 @@ export default function CalendarWeekly({ currentDate, onDateSelect }: CalendarWe
     const now = new Date();
     return (now.getHours() * 60 + now.getMinutes()) * (HOUR_HEIGHT / 60);
   })();
+
+  useEffect(() => {
+    if (isLoading || hasScrolled.current || !scrollRef.current) return;
+    hasScrolled.current = true;
+
+    const now = new Date();
+    const todayTimed = timedEvents.filter((e) => isSameDay(new Date(e.start_at), now));
+
+    let scrollPx: number;
+    if (todayTimed.length > 0) {
+      const nowMs = now.getTime();
+      const closest = todayTimed.reduce((prev, curr) =>
+        Math.abs(new Date(curr.start_at).getTime() - nowMs) <
+        Math.abs(new Date(prev.start_at).getTime() - nowMs)
+          ? curr
+          : prev,
+      );
+      scrollPx = Math.max(0, eventTopPx(closest) - 60);
+    } else {
+      scrollPx = Math.max(0, nowPx - 120);
+    }
+
+    scrollRef.current.scrollTop = scrollPx;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   const todayInWeek = days.some((d) => isSameDay(d, today));
 
