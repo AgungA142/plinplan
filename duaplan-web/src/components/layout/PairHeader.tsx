@@ -7,7 +7,11 @@ export default function PairHeader() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await logout();
+    try {
+      await logout();
+    } catch {
+      // store clears local state regardless; proceed with redirect
+    }
     navigate('/', { replace: true });
   }
 
