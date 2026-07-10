@@ -72,7 +72,7 @@ export default function PairPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-full flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-1">
             <div className="flex items-center justify-center gap-2">

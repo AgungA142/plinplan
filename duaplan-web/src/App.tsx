@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PairedRoute from '@/routes/PairedRoute';
+import PairHeader from '@/components/layout/PairHeader';
 import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
@@ -27,7 +28,9 @@ function App() {
 
       {/* Auth required, pairing belum selesai */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/pair" element={<PairPage />} />
+        <Route element={<PairHeader />}>
+          <Route path="/pair" element={<PairPage />} />
+        </Route>
       </Route>
 
       {/* Auth + paired required */}
