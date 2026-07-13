@@ -15,6 +15,7 @@ import ExpensesPage from '@/pages/ExpensesPage';
 import SavingsPage from '@/pages/SavingsPage';
 import IssuesPage from '@/pages/IssuesPage';
 import MonitoringPage from '@/pages/MonitoringPage';
+import AppShell from '@/components/layout/AppShell';
 
 function App() {
   return (
@@ -35,13 +36,15 @@ function App() {
 
       {/* Auth + paired required */}
       <Route element={<PairedRoute />}>
-        <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/routine" element={<RoutinePage />} />
-        <Route path="/finance" element={<FinancePage />} />
-        <Route path="/expenses" element={<ExpensesPage />} />
-        <Route path="/savings" element={<SavingsPage />} />
-        <Route path="/issues" element={<IssuesPage />} />
-        <Route path="/monitoring" element={<MonitoringPage />} />
+        <Route element={<AppShell />}>
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/routine" element={<RoutinePage />} />
+          <Route path="/finance" element={<FinancePage />} />
+          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/savings" element={<SavingsPage />} />
+          <Route path="/issues" element={<IssuesPage />} />
+          <Route path="/monitoring" element={<MonitoringPage />} />
+        </Route>
       </Route>
 
       {/* Fallback */}

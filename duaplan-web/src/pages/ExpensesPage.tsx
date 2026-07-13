@@ -1,8 +1,8 @@
 export default function ExpensesPage() {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Pengeluaran</h1>
-      <p style={{ color: 'var(--color-text-muted)' }}>Halaman ini belum diimplementasi.</p>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold text-foreground">Pengeluaran</h1>
+      <p className="mt-2 text-sm text-muted-foreground">Halaman ini belum diimplementasi.</p>
     </div>
   );
 }

@@ -62,9 +62,9 @@ export default function CalendarPage() {
         );
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-full bg-background overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-56 flex-shrink-0 border-r border-border flex flex-col">
+      <aside className="hidden md:flex w-56 flex-shrink-0 border-r border-border flex-col">
         <div className="p-3 border-b border-border">
           <Button
             className="w-full gap-2"
