@@ -67,9 +67,11 @@ export default function Sidebar() {
           {user?.display_name ?? '—'}
         </p>
         <button
+          type="button"
           onClick={handleLogout}
           className="text-muted-foreground hover:text-foreground transition-colors"
           title="Keluar"
+          aria-label="Keluar"
         >
           <LogOut className="w-4 h-4" />
         </button>
