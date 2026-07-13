@@ -127,7 +127,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Views */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden pb-16 md:pb-0">
           {view === 'monthly' && (
             <CalendarMonthly currentDate={currentDate} onDateSelect={handleDateSelect} />
           )}
